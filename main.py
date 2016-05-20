@@ -1,22 +1,13 @@
 import os
-import urllib
 import jinja2
 import webapp2
-
-from apiclient.discovery import build
-from optparse import OptionParser
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-DEVELOPER_KEY = "change me"
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
-
 videos_per_page = 2
-
 
 
 class Page(webapp2.RequestHandler):
@@ -269,92 +260,6 @@ class About(Page):
     template = 'about.html'
     page = 'about'     
     videos = []
-
-class Youtube(webapp2.RequestHandler):
-  def get(self):
-    if API_KEY == 'REPLACE_ME':
-      self.response.write(REGISTRATION_INSTRUCTIONS)
-    else:
-      # Present a list of Freebase topic IDs for the query term
-      self.request_channel()
-
-  def request_channel(self):
-    # Display a text box where the user can enter a channel name or
-    # channel ID.
-    select_channel_page = '''
-        <html>
-          <body>
-            <p>Which channel's videos do you want to see?</p>
-            <form method="post">
-              <p>
-                <select name="channel_type">
-                  <option value="id">Channel ID</option>
-                  <option value="name">Channel name</option>
-                </select>  
-                <input name="channel" size="30">
-              </p>
-              <p><input type="submit" /></p>
-            </form>
-          </body>
-        </html>
-    '''
-
-    # Display the HTML page that shows the form.
-    self.response.out.write(select_channel_page)
-
-  def post(self):
-    # Service for calling the YouTube API
-    youtube = build(YOUTUBE_API_SERVICE_NAME,
-                    YOUTUBE_API_VERSION,
-                    developerKey=API_KEY)
-
-    # Use form inputs to create request params for channel details
-    channel_type = self.request.get('channel_type')
-    channels_response = None
-    if channel_type == 'id':
-      channels_response = youtube.channels().list(
-          id=self.request.get('channel'),
-          part='snippet,contentDetails'
-      ).execute()
-    else:
-      channels_response = youtube.channels().list(
-          forUsername=self.request.get('channel'),
-          part='snippet,contentDetails'
-      ).execute()
-
-    channel_name = ''
-    videos = []
-
-    for channel in channels_response['items']:
-      uploads_list_id = channel['contentDetails']['relatedPlaylists']['uploads']
-      channel_name = channel['snippet']['title']
-      
-      next_page_token = ''
-      while next_page_token is not None:
-        playlistitems_response = youtube.playlistItems().list(
-            playlistId=uploads_list_id,
-            part='snippet',
-            maxResults=50,
-            pageToken=next_page_token
-        ).execute()
-
-        for playlist_item in playlistitems_response['items']:
-          videos.append(playlist_item)
-          
-        next_page_token = playlistitems_response.get('tokenPagination', {}).get(
-            'nextPageToken')
-        
-        if len(videos) > 100:
-          break
-
-    template_values = {
-      'channel_name': channel_name,
-      'videos': videos
-    }
-
-    self.response.headers['Content-type'] = 'text/html'
-    template = JINJA_ENVIRONMENT.get_template('index.html')
-    self.response.write(template.render(template_values))
         
         
 app = webapp2.WSGIApplication([
@@ -375,7 +280,6 @@ app = webapp2.WSGIApplication([
     ('/readingbear', Readingbear),   
 
     ('/about', About), 
-    ('/youtube', Youtube)
     
 ]) #, debug=True)
 
