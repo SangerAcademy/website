@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sanger Academy is building a nonprofit to create free educational videos for pre-K through 4th grade from Dr. Larry Sanger, philosopher and co-founder of Wikipedia.  We want to have 1000s of videos, but we need your support.">
+    <meta name="author" content="Larry Sanger">
+
+    <title>Sanger Academy - videos that explain the world to kids</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div id="banner"><img src="images/SmilingChildren2.jpg"></div>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+  <li><a {% if page == 'new' %}        class="active" {% else %} href="/"           {% endif %}>Home</a></li>
+  <li><a {% if page == 'basic' %}      class="active" {% else %} href="/basic"      {% endif %}>Basic</a></li>
+  <li><a {% if page == 'advanced' %}   class="active" {% else %} href="/advanced"   {% endif %}>Advanced</a></li>
+  <li><a {% if page == 'preschool' %}  class="active" {% else %} href="/preschool"  {% endif %}>Preschool</a></li>
+  <li><a {% if page == 'art' %}        class="active" {% else %} href="/art"        {% endif %}>Art</a></li>
+  <li><a {% if page == 'literature' %} class="active" {% else %} href="/literature" {% endif %}>Literature</a></li>
+  <li><a {% if page == 'government' %} class="active" {% else %} href="/government" {% endif %}>Government</a></li>
+  <li><a {% if page == 'geography' %}  class="active" {% else %} href="/geography"  {% endif %}>Geography</a></li>
+  <li><a {% if page == 'history' %}    class="active" {% else %} href="/history"    {% endif %}>History</a></li>
+  <li><a {% if page == 'misc' %}       class="active" {% else %} href="/misc"       {% endif %}>Misc</a></li>
+  <li><a {% if page == 'science' %}    class="active" {% else %} href="/science"    {% endif %}>Science</a></li>
+  <li><a {% if page == '26letters' %}  class="active" {% else %} href="/26letters"  {% endif %}>The 26 Letters</a></li>
+  <li><a {% if page == 'popular' %}    class="active" {% else %} href="/popular"    {% endif %}>Popular</a></li>
+  <li><a {% if page == 'readingbear'%} class="active" {% else %} href="/readingbear"{% endif %}>Reading Bear</a></li>
+  <li><a {% if page == 'about'%}       class="active" {% else %} href="/about"      {% endif %}>About</a></li>
+
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+
+						<div id="blurb">
+						  <b>Sanger Academy</b> is <a href="/about">building a nonprofit</a> to create free educational videos for pre-K through 4th grade from Dr. Larry Sanger, philosopher and co-founder of Wikipedia.  We want to have 1000s of videos, but we need your support.
+						  UNDER CONSTRUCTION, PLEASE DON'T ANNOUNCE.
+						</div>
+
+                        <div id="menu-button">
+                          <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">&#9776; Menu</a>
+                        </div>
+
+                        <div id="content">
+                        {% block content %}{% endblock %}
+
+							<table id="videos">
+							<tbody><!-- other youtube options modestbranding=1&autohide=1&showinfo=0&controls=0-->
+							{% for video in videos %}
+							  <tr><td><iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video }}?showinfo=0" frameborder="0" allowfullscreen></iframe></td></tr>
+							{% endfor %}
+							</tbody>
+							</table>
+
+                        </div>
+					    <div id="page-selection"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	<script src="js/video_resize.js"></script>
+
+	{% if num_videos > videos_per_page %}
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.bootpag.min.js"></script>
+	<script type="text/javascript">
+        // init bootpag
+        $('#page-selection').bootpag({
+            total: Math.round(({{ num_videos }}/{{ videos_per_page }}))
+        }).on("page", function(event, num){
+             $("#content").html("Page " + num);
+        });
+	</script>
+	{% endif %}
+
+</body>
+
+</html>
